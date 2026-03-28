@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign Up — AI Podcast Generator</title>
+  <link rel="stylesheet" href="css/auth.css"/>
+</head>
+<body>
+  <div class="auth-wrapper">
+    <div class="auth-card">
+      <div class="auth-logo">🎙️</div>
+      <h1 class="auth-title">Create Account</h1>
+      <p class="auth-sub">Start generating AI podcasts</p>
+
+      <div id="errorBox" class="alert alert-error" style="display:none"></div>
+
+      <form id="signupForm" novalidate>
+        <div class="field">
+          <label for="name">Full Name</label>
+          <input type="text" id="name" placeholder="Your name" required autocomplete="name"/>
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" placeholder="you@example.com" required autocomplete="email"/>
+        </div>
+        <div class="field">
+          <label for="password">Password <span class="hint-inline">(min 6 chars)</span></label>
+          <input type="password" id="password" placeholder="••••••••" required autocomplete="new-password"/>
+        </div>
+        <button type="submit" class="btn-auth" id="submitBtn">Create Account</button>
+      </form>
+
+      <p class="auth-switch">Already have an account? <a href="login.html">Sign in</a></p>
+    </div>
+  </div>
+  <script src="js/auth.js"></script>
+  <script>
+    document.getElementById('signupForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      await handleSignup(
+        document.getElementById('name').value,
+        document.getElementById('email').value,
+        document.getElementById('password').value
+      );
+    });
+  </script>
+</body>
+</html>

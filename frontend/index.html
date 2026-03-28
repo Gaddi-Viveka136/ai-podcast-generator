@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI Podcast Generator — Dashboard</title>
+  <link rel="stylesheet" href="css/app.css"/>
+</head>
+<body>
+
+<!-- ── Navbar ── -->
+<nav class="navbar">
+  <div class="nav-brand">🎙️ AI Podcast Generator</div>
+  <div class="nav-right">
+    <span id="navUser" class="nav-user"></span>
+    <button id="historyToggle" class="btn-nav">📋 History</button>
+    <button id="logoutBtn" class="btn-nav btn-logout">Logout</button>
+  </div>
+</nav>
+
+<div class="layout">
+
+  <!-- ── Sidebar: History ── -->
+  <aside id="sidebar" class="sidebar hidden">
+    <h3 class="sidebar-title">Recent Podcasts</h3>
+    <div id="historyList" class="history-list">
+      <p class="muted-sm">No history yet.</p>
+    </div>
+  </aside>
+
+  <!-- ── Main Content ── -->
+  <main class="main-content">
+
+    <!-- ① INPUT CARD -->
+    <section class="card">
+      <h2 class="card-title">📄 Input</h2>
+
+      <!-- Drag & Drop Zone -->
+      <div id="dropZone" class="drop-zone">
+        <div class="drop-icon">📂</div>
+        <p class="drop-label">Drag &amp; drop a <strong>TXT</strong> or <strong>PDF</strong> file</p>
+        <p class="drop-sub">or click to browse</p>
+        <label class="btn-file" for="fileInput">Browse File</label>
+        <input type="file" id="fileInput" accept=".txt,.pdf" hidden/>
+        <span id="fileName" class="file-name"></span>
+      </div>
+
+      <!-- Loading bar for file extraction -->
+      <div id="extractLoader" class="loader-bar" style="display:none">
+        <span class="spinner"></span> Extracting file…
+      </div>
+
+      <textarea id="inputText" placeholder="Extracted text appears here — or type / paste directly…" rows="8"></textarea>
+      <div class="row-between" style="margin-top:8px">
+        <span id="wordCount" class="muted-sm"></span>
+        <input type="text" id="podcastTitle" class="title-input" placeholder="Podcast title (optional)"/>
+      </div>
+    </section>
+
+    <!-- ② DURATION CARD -->
+    <section class="card">
+      <h2 class="card-title">⏱️ Duration</h2>
+      <div class="duration-row">
+        <label for="durationInput">Desired length (minutes):</label>
+        <input type="number" id="durationInput" min="1" max="30" value="2"/>
+      </div>
+      <p class="hint">Controls how much of the text is summarized.</p>
+    </section>
+
+    <!-- SUMMARIZE -->
+    <div class="center">
+      <button id="summarizeBtn" class="btn primary">✨ Summarize with AI</button>
+    </div>
+
+    <!-- ③ SUMMARY CARD -->
+    <section class="card" id="summaryCard" style="display:none">
+      <h2 class="card-title">📝 AI Summary</h2>
+      <div id="summaryLoader" class="loader-bar" style="display:none">
+        <span class="spinner"></span> Generating summary…
+      </div>
+      <div id="summaryOutput" class="summary-box"></div>
+      <div class="row-between" style="margin-top:10px">
+        <span id="summaryMeta" class="muted-sm"></span>
+        <span id="estimatedDur" class="muted-sm"></span>
+      </div>
+    </section>
+
+    <!-- ④ VOICE MODE -->
+    <section class="card" id="voiceCard" style="display:none">
+      <h2 class="card-title">🎭 Voice Mode</h2>
+      <div class="mode-row">
+        <button class="mode-btn active" data-mode="normal">😐 Normal</button>
+        <button class="mode-btn" data-mode="fast">⚡ Fast</button>
+        <button class="mode-btn" data-mode="story">📖 Story</button>
+      </div>
+    </section>
+
+    <!-- GENERATE -->
+    <div class="center" id="generateWrap" style="display:none">
+      <button id="generateBtn" class="btn accent">🎙️ Generate Podcast</button>
+    </div>
+
+    <!-- ⑤ AUDIO PLAYER -->
+    <section class="card" id="playerCard" style="display:none">
+      <h2 class="card-title">🎧 Audio Player</h2>
+      <div id="generateLoader" class="loader-bar" style="display:none">
+        <span class="spinner"></span> Generating audio…
+      </div>
+      <audio id="audioEl" preload="auto"></audio>
+      <div class="time-row">
+        <span id="currentTime">00:00</span>
+        <span id="totalTime">00:00</span>
+      </div>
+      <input type="range" id="seekBar" class="seek-bar" min="0" max="100" value="0" step="0.1"/>
+      <div class="controls-row">
+        <button id="rewindBtn"  class="btn control">⏪ -5s</button>
+        <button id="playBtn"    class="btn control">▶ Play</button>
+        <button id="pauseBtn"   class="btn control" disabled>⏸ Pause</button>
+        <button id="stopBtn"    class="btn control" disabled>⏹ Stop</button>
+        <button id="forwardBtn" class="btn control">⏩ +5s</button>
+      </div>
+      <div class="center" style="margin-top:14px">
+        <a id="downloadBtn" class="btn download" download>⬇️ Download MP3</a>
+      </div>
+    </section>
+
+    <!-- ⑥ SUBTITLES -->
+    <section class="card" id="subtitleCard" style="display:none">
+      <h2 class="card-title">📺 Now Speaking</h2>
+      <div class="subtitle-box">
+        <div id="subtitleText" class="subtitle-text">—</div>
+      </div>
+      <div id="sentenceTrack" class="sentence-track"></div>
+    </section>
+
+    <!-- ⑦ Q&A -->
+    <section class="card" id="qaCard" style="display:none">
+      <h2 class="card-title">💬 Interactive Q&amp;A</h2>
+      <p class="hint">Ask anything — answered by AI using only the summary.</p>
+      <div class="qa-row">
+        <input type="text" id="qaInput" placeholder="Ask a question…"/>
+        <button id="qaBtn" class="btn primary">Ask</button>
+      </div>
+      <div id="qaLoader" class="loader-bar" style="display:none">
+        <span class="spinner"></span> Thinking…
+      </div>
+      <div id="qaAnswer" class="qa-answer" style="display:none"></div>
+      <div id="qaHistory" class="qa-history"></div>
+    </section>
+
+  </main>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/player.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login — AI Podcast Generator</title>
+  <link rel="stylesheet" href="css/auth.css"/>
+</head>
+<body>
+  <div class="auth-wrapper">
+    <div class="auth-card">
+      <div class="auth-logo">🎙️</div>
+      <h1 class="auth-title">AI Podcast Generator</h1>
+      <p class="auth-sub">Sign in to your account</p>
+
+      <div id="errorBox" class="alert alert-error" style="display:none"></div>
+
+      <form id="loginForm" novalidate>
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" placeholder="you@example.com" required autocomplete="email"/>
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input type="password" id="password" placeholder="••••••••" required autocomplete="current-password"/>
+        </div>
+        <button type="submit" class="btn-auth" id="submitBtn">Sign In</button>
+      </form>
+
+      <p class="auth-switch">Don't have an account? <a href="signup.html">Sign up</a></p>
+    </div>
+  </div>
+  <script src="js/auth.js"></script>
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      await handleLogin(
+        document.getElementById('email').value,
+        document.getElementById('password').value
+      );
+    });
+  </script>
+</body>
+</html>
