@@ -53,22 +53,35 @@ router.post('/login', [
   }
 });
 
+// ── GET /api/auth/google-status ───────────────────
+// Lets frontend check if Google OAuth is configured
+router.get('/google-status', (req, res) => {
+  res.json({ enabled: !!(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) });
+});
+
 // ── GET /api/auth/google ───────────────────────────
-router.get('/google',
-  passport.authenticate('google', { scope: ['profile', 'email'] })
-);
+router.get('/google', (req, res, next) => {
+  if (!process.env.GOOGLE_CLIENT_ID) {
+    return res.status(503).json({ error: 'Google OAuth not configured.' });
+  }
+  passport.authenticate('google', { scope: ['profile', 'email'] })(req, res, next);
+});
 
 // ── GET /api/auth/google/callback ─────────────────
-router.get('/google/callback',
-  passport.authenticate('google', { session: false, failureRedirect: '/login.html?error=google' }),
-  (req, res) => {
-    const token = signToken(req.user);
-    const user  = { id: req.user._id, name: req.user.name, email: req.user.email };
-    // Redirect to frontend with token in URL — frontend will store it
-    const frontendURL = process.env.FRONTEND_URL || 'http://localhost:3000';
-    res.redirect(`${frontendURL}/index.html?token=${token}&user=${encodeURIComponent(JSON.stringify(user))}`);
+router.get('/google/callback', (req, res, next) => {
+  if (!process.env.GOOGLE_CLIENT_ID) {
+    return res.redirect((process.env.FRONTEND_URL || 'http://localhost:3000') + '/login.html?error=google');
   }
-);
+  passport.authenticate('google', { session: false, failureRedirect: '/login.html?error=google' },
+    (err, user) => {
+      if (err || !user) return res.redirect((process.env.FRONTEND_URL || 'http://localhost:3000') + '/login.html?error=google');
+      const token = signToken(user);
+      const userData = { id: user._id, name: user.name, email: user.email };
+      const frontendURL = process.env.FRONTEND_URL || 'http://localhost:3000';
+      res.redirect(`${frontendURL}/index.html?token=${token}&user=${encodeURIComponent(JSON.stringify(userData))}`);
+    }
+  )(req, res, next);
+});
 const authMiddleware = require('../middleware/auth');
 router.get('/me', authMiddleware, async (req, res) => {
   try {
