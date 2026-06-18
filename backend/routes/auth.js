@@ -63,4 +63,25 @@ router.get('/me', authMiddleware, async (req, res) => {
   }
 });
 
+// ── POST /api/auth/reset-password ──────────────────
+router.post('/reset-password', [
+  body('email').isEmail().withMessage('Valid email required'),
+  body('newPassword').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) return res.status(400).json({ error: errors.array()[0].msg });
+
+  try {
+    const { email, newPassword } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ error: 'No account found with that email.' });
+
+    user.password = newPassword; // pre-save hook will hash it
+    await user.save();
+    res.json({ message: 'Password reset successfully.' });
+  } catch (err) {
+    res.status(500).json({ error: 'Server error during password reset.' });
+  }
+});
+
 module.exports = router;

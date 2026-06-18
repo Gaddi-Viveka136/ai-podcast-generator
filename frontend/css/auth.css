@@ -101,3 +101,5 @@ body {
 }
 .auth-switch a { color: var(--accent2); text-decoration: none; font-weight: 600; }
 .auth-switch a:hover { text-decoration: underline; }
+
+.alert-success { background: rgba(94,234,212,0.12); border: 1px solid #5eead4; color: #5eead4; }
