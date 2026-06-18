@@ -2,6 +2,8 @@ require('dotenv').config();
 const express    = require('express');
 const cors       = require('cors');
 const path       = require('path');
+const session    = require('express-session');
+const passport   = require('./config/passport');
 const connectDB  = require('./config/db');
 
 const authRoutes    = require('./routes/auth');
@@ -17,6 +19,9 @@ connectDB();
 app.use(cors({ origin: '*', credentials: true }));
 app.use(express.json({ limit: '20mb' }));
 app.use(express.urlencoded({ extended: true, limit: '20mb' }));
+app.use(session({ secret: process.env.JWT_SECRET, resave: false, saveUninitialized: false }));
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Serve generated audio files statically
 app.use('/audio', express.static(path.join(__dirname, 'audio')));

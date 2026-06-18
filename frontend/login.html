@@ -13,7 +13,13 @@
       <h1 class="auth-title">AI Podcast Generator</h1>
       <p class="auth-sub">Sign in to your account</p>
 
-      <div id="errorBox" class="alert alert-error" style="display:none"></div>
+      <!-- Error box — hidden by default, shows forgot password link on wrong credentials -->
+      <div id="errorBox" class="alert alert-error" style="display:none">
+        <span id="errorMsg"></span>
+        <a id="forgotLink" href="reset-password.html" class="forgot-inline" style="display:none">
+          Forgot password?
+        </a>
+      </div>
 
       <form id="loginForm" novalidate>
         <div class="field">
@@ -27,19 +33,37 @@
         <button type="submit" class="btn-auth" id="submitBtn">Sign In</button>
       </form>
 
+      <!-- Divider -->
+      <div class="divider"><span>or</span></div>
+
+      <!-- Google Sign-In -->
+      <button id="googleBtn" class="btn-google">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" width="20"/>
+        Continue with Google
+      </button>
+
       <p class="auth-switch">Don't have an account? <a href="signup.html">Sign up</a></p>
-      <p class="auth-switch"><a href="reset-password.html">Forgot password?</a></p>
     </div>
   </div>
+
   <script src="js/config.js"></script>
   <script src="js/auth.js"></script>
   <script>
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
       e.preventDefault();
-      await handleLogin(
+      const success = await handleLogin(
         document.getElementById('email').value,
         document.getElementById('password').value
       );
+      // Show forgot password link only after a failed login
+      if (!success) {
+        document.getElementById('forgotLink').style.display = 'inline';
+      }
+    });
+
+    // Google Sign-In
+    document.getElementById('googleBtn').addEventListener('click', () => {
+      window.location.href = (window.BACKEND_URL || 'http://localhost:5000') + '/api/auth/google';
     });
   </script>
 </body>

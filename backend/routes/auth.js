@@ -1,5 +1,6 @@
 const express = require('express');
 const jwt     = require('jsonwebtoken');
+const passport = require('../config/passport');
 const { body, validationResult } = require('express-validator');
 const User    = require('../models/User');
 const router  = express.Router();
@@ -52,7 +53,22 @@ router.post('/login', [
   }
 });
 
-// ── GET /api/auth/me ───────────────────────────────
+// ── GET /api/auth/google ───────────────────────────
+router.get('/google',
+  passport.authenticate('google', { scope: ['profile', 'email'] })
+);
+
+// ── GET /api/auth/google/callback ─────────────────
+router.get('/google/callback',
+  passport.authenticate('google', { session: false, failureRedirect: '/login.html?error=google' }),
+  (req, res) => {
+    const token = signToken(req.user);
+    const user  = { id: req.user._id, name: req.user.name, email: req.user.email };
+    // Redirect to frontend with token in URL — frontend will store it
+    const frontendURL = process.env.FRONTEND_URL || 'http://localhost:3000';
+    res.redirect(`${frontendURL}/index.html?token=${token}&user=${encodeURIComponent(JSON.stringify(user))}`);
+  }
+);
 const authMiddleware = require('../middleware/auth');
 router.get('/me', authMiddleware, async (req, res) => {
   try {

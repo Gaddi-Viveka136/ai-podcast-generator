@@ -103,3 +103,50 @@ body {
 .auth-switch a:hover { text-decoration: underline; }
 
 .alert-success { background: rgba(94,234,212,0.12); border: 1px solid #5eead4; color: #5eead4; }
+
+/* ── Divider ── */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+.divider::before, .divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ── Google Button ── */
+.btn-google {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: #fff;
+  color: #3c4043;
+  border: 1px solid #dadce0;
+  border-radius: 10px;
+  padding: 11px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: box-shadow 0.2s, background 0.2s;
+  margin-bottom: 6px;
+}
+.btn-google:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.15); background: #f8f9fa; }
+
+/* ── Forgot inline ── */
+.forgot-inline {
+  display: block;
+  margin-top: 6px;
+  color: var(--accent2);
+  font-size: 0.85rem;
+  text-decoration: none;
+  font-weight: 600;
+}
+.forgot-inline:hover { text-decoration: underline; }

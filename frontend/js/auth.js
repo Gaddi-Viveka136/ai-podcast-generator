@@ -4,7 +4,9 @@ const API = (window.BACKEND_URL || 'http://localhost:5000') + '/api';
 
 function showError(msg) {
   const box = document.getElementById('errorBox');
-  box.textContent = msg;
+  const msgEl = document.getElementById('errorMsg');
+  if (msgEl) msgEl.textContent = msg;
+  else box.textContent = msg;
   box.style.display = 'block';
 }
 
@@ -26,7 +28,7 @@ if (localStorage.getItem('token')) {
 
 async function handleLogin(email, password) {
   hideError();
-  if (!email || !password) { showError('Please fill in all fields.'); return; }
+  if (!email || !password) { showError('Please fill in all fields.'); return false; }
 
   setLoading(true, 'Sign In');
   try {
@@ -36,12 +38,14 @@ async function handleLogin(email, password) {
       body: JSON.stringify({ email: email.trim(), password }),
     });
     const data = await res.json();
-    if (!res.ok) { showError(data.error || 'Login failed.'); return; }
+    if (!res.ok) { showError(data.error || 'Login failed.'); return false; }
     localStorage.setItem('token', data.token);
     localStorage.setItem('user',  JSON.stringify(data.user));
     window.location.href = 'index.html';
+    return true;
   } catch {
     showError('Cannot reach server. The backend may be starting up — wait 30 seconds and try again.');
+    return false;
   } finally {
     setLoading(false, 'Sign In');
   }
