@@ -8,10 +8,15 @@ function showError(msg) {
   box.style.display = 'block';
 }
 
-function setLoading(loading) {
+function hideError() {
+  const box = document.getElementById('errorBox');
+  box.style.display = 'none';
+}
+
+function setLoading(loading, originalText) {
   const btn = document.getElementById('submitBtn');
   btn.disabled = loading;
-  btn.textContent = loading ? 'Please wait…' : btn.dataset.label || btn.textContent;
+  btn.textContent = loading ? 'Please wait…' : originalText;
 }
 
 // Redirect if already logged in
@@ -20,12 +25,15 @@ if (localStorage.getItem('token')) {
 }
 
 async function handleLogin(email, password) {
-  setLoading(true);
+  hideError();
+  if (!email || !password) { showError('Please fill in all fields.'); return; }
+
+  setLoading(true, 'Sign In');
   try {
     const res  = await fetch(`${API}/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email: email.trim(), password }),
     });
     const data = await res.json();
     if (!res.ok) { showError(data.error || 'Login failed.'); return; }
@@ -33,19 +41,24 @@ async function handleLogin(email, password) {
     localStorage.setItem('user',  JSON.stringify(data.user));
     window.location.href = 'index.html';
   } catch {
-    showError('Cannot reach server. Make sure the backend is running.');
+    showError('Cannot reach server. The backend may be starting up — wait 30 seconds and try again.');
   } finally {
-    setLoading(false);
+    setLoading(false, 'Sign In');
   }
 }
 
 async function handleSignup(name, email, password) {
-  setLoading(true);
+  hideError();
+  if (!name || !name.trim()) { showError('Please enter your full name.'); return; }
+  if (!email || !email.trim()) { showError('Please enter your email.'); return; }
+  if (!password || password.length < 6) { showError('Password must be at least 6 characters.'); return; }
+
+  setLoading(true, 'Create Account');
   try {
     const res  = await fetch(`${API}/auth/signup`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email, password }),
+      body: JSON.stringify({ name: name.trim(), email: email.trim(), password }),
     });
     const data = await res.json();
     if (!res.ok) { showError(data.error || 'Signup failed.'); return; }
@@ -53,8 +66,8 @@ async function handleSignup(name, email, password) {
     localStorage.setItem('user',  JSON.stringify(data.user));
     window.location.href = 'index.html';
   } catch {
-    showError('Cannot reach server. Make sure the backend is running.');
+    showError('Cannot reach server. The backend may be starting up — wait 30 seconds and try again.');
   } finally {
-    setLoading(false);
+    setLoading(false, 'Create Account');
   }
 }
