@@ -33,6 +33,25 @@ $('historyToggle').addEventListener('click', () => {
   if (!sidebar.classList.contains('hidden')) loadHistory();
 });
 
+// ── Input Tabs ────────────────────────────────────
+document.querySelectorAll('.input-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.input-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    const target = tab.dataset.tab;
+    document.getElementById('tab-type').style.display = target === 'type' ? 'block' : 'none';
+    document.getElementById('tab-file').style.display = target === 'file' ? 'block' : 'none';
+  });
+});
+
+// ── Clear button ───────────────────────────────────
+document.getElementById('clearBtn').addEventListener('click', () => {
+  $('inputText').value = '';
+  appState.rawText = '';
+  $('wordCount').textContent = '';
+  $('inputText').focus();
+});
+
 // ── Drag & Drop ────────────────────────────────────
 const dropZone = $('dropZone');
 
@@ -69,6 +88,11 @@ async function handleFileUpload(file) {
     $('inputText').value = data.text;
     appState.rawText = data.text;
     updateWordCount();
+    // Switch to type tab so user sees the extracted text
+    document.querySelectorAll('.input-tab').forEach(t => t.classList.remove('active'));
+    document.querySelector('.input-tab[data-tab="type"]').classList.add('active');
+    document.getElementById('tab-type').style.display = 'block';
+    document.getElementById('tab-file').style.display = 'none';
   } catch (err) {
     setDropError(err.message);
   } finally {

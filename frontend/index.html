@@ -35,26 +35,40 @@
     <section class="card">
       <h2 class="card-title">📄 Input</h2>
 
-      <!-- Drag & Drop Zone -->
-      <div id="dropZone" class="drop-zone">
-        <div class="drop-icon">📂</div>
-        <p class="drop-label">Drag &amp; drop a <strong>TXT</strong> or <strong>PDF</strong> file</p>
-        <p class="drop-sub">or click to browse</p>
-        <label class="btn-file" for="fileInput">Browse File</label>
-        <input type="file" id="fileInput" accept=".txt,.pdf" hidden/>
-        <span id="fileName" class="file-name"></span>
+      <!-- Tab switcher -->
+      <div class="input-tabs">
+        <button class="input-tab active" data-tab="type">✏️ Type / Paste Text</button>
+        <button class="input-tab" data-tab="file">📁 Upload File</button>
       </div>
 
-      <!-- Loading bar for file extraction -->
-      <div id="extractLoader" class="loader-bar" style="display:none">
-        <span class="spinner"></span> Extracting file…
+      <!-- Tab: Type / Paste -->
+      <div id="tab-type" class="tab-panel">
+        <div class="textarea-header">
+          <span class="muted-sm">Type, paste, or edit your text below</span>
+          <button id="clearBtn" class="btn-clear" title="Clear text">✕ Clear</button>
+        </div>
+        <textarea id="inputText" placeholder="Paste or type your text here…&#10;&#10;Example: Copy an article, news story, blog post, or any content you want to turn into a podcast." rows="10"></textarea>
+        <div class="row-between" style="margin-top:8px">
+          <span id="wordCount" class="muted-sm"></span>
+          <input type="text" id="podcastTitle" class="title-input" placeholder="Podcast title (optional)"/>
+        </div>
       </div>
 
-      <textarea id="inputText" placeholder="Extracted text appears here — or type / paste directly…" rows="8"></textarea>
-      <div class="row-between" style="margin-top:8px">
-        <span id="wordCount" class="muted-sm"></span>
-        <input type="text" id="podcastTitle" class="title-input" placeholder="Podcast title (optional)"/>
+      <!-- Tab: File Upload -->
+      <div id="tab-file" class="tab-panel" style="display:none">
+        <div id="dropZone" class="drop-zone">
+          <div class="drop-icon">📂</div>
+          <p class="drop-label">Drag &amp; drop a <strong>TXT</strong> or <strong>PDF</strong> file</p>
+          <p class="drop-sub">or click to browse</p>
+          <label class="btn-file" for="fileInput">Browse File</label>
+          <input type="file" id="fileInput" accept=".txt,.pdf" hidden/>
+          <span id="fileName" class="file-name"></span>
+        </div>
+        <div id="extractLoader" class="loader-bar" style="display:none">
+          <span class="spinner"></span> Extracting file…
+        </div>
       </div>
+
     </section>
 
     <!-- ② DURATION CARD -->
