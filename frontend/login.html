@@ -33,15 +33,6 @@
         <button type="submit" class="btn-auth" id="submitBtn">Sign In</button>
       </form>
 
-      <!-- Divider -->
-      <div class="divider"><span>or</span></div>
-
-      <!-- Google Sign-In -->
-      <button id="googleBtn" class="btn-google">
-        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" width="20"/>
-        Continue with Google
-      </button>
-
       <p class="auth-switch">Don't have an account? <a href="signup.html">Sign up</a></p>
     </div>
   </div>
@@ -55,28 +46,9 @@
         document.getElementById('email').value,
         document.getElementById('password').value
       );
-      // Show forgot password link only after a failed login
       if (!success) {
         document.getElementById('forgotLink').style.display = 'inline';
       }
-    });
-
-    // Google Sign-In
-    document.getElementById('googleBtn').addEventListener('click', () => {
-      const backendURL = window.BACKEND_URL || 'http://localhost:5000';
-      // Test if Google OAuth is configured before redirecting
-      fetch(backendURL + '/api/auth/google-status')
-        .then(r => r.json())
-        .then(data => {
-          if (data.enabled) {
-            window.location.href = backendURL + '/api/auth/google';
-          } else {
-            alert('Google Sign-In is not configured yet. Please use email/password to sign in.');
-          }
-        })
-        .catch(() => {
-          window.location.href = backendURL + '/api/auth/google';
-        });
     });
   </script>
 </body>
