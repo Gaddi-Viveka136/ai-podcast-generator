@@ -1,6 +1,9 @@
 /* api.js — all backend API calls */
 
-const API_BASE = 'http://localhost:5000/api';
+// Uses deployed backend URL if set, otherwise localhost for development
+const API_BASE = window.BACKEND_URL
+  ? window.BACKEND_URL + '/api'
+  : 'http://localhost:5000/api';
 
 function getToken() {
   return localStorage.getItem('token');

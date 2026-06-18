@@ -31,4 +31,6 @@ app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
 
 // ── Start ───────────────────────────────────────────
 const PORT = process.env.PORT || 5000;
+// trust Render's proxy
+app.set('trust proxy', 1);
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));

@@ -96,7 +96,8 @@ function setSentences(sentences) {
 }
 
 function loadAudio(url) {
-  audio.src = `http://localhost:5000${url}`;
+  const base = window.BACKEND_URL || 'http://localhost:5000';
+  audio.src = `${base}${url}`;
   audio.load();
   document.getElementById('downloadBtn').href = audio.src;
   updatePlayerControls();

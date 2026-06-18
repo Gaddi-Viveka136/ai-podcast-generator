@@ -1,6 +1,6 @@
 /* auth.js — shared auth helpers for login.html and signup.html */
 
-const API = 'http://localhost:5000/api';
+const API = (window.BACKEND_URL || 'http://localhost:5000') + '/api';
 
 function showError(msg) {
   const box = document.getElementById('errorBox');
