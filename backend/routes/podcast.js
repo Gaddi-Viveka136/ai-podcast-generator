@@ -60,7 +60,7 @@ router.post('/summarize', auth, async (req, res) => {
 
   try {
     const completion = await groq.chat.completions.create({
-      model: 'llama3-8b-8192',
+      model: 'openai/gpt-oss-20b',
       messages: [
         {
           role: 'system',
@@ -129,7 +129,7 @@ router.post('/qa', auth, async (req, res) => {
 
   try {
     const completion = await groq.chat.completions.create({
-      model: 'llama3-8b-8192',
+      model: 'openai/gpt-oss-20b',
       messages: [
         {
           role: 'system',
